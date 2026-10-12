@@ -1,0 +1,3 @@
+// Minimal documented educational instruction schema. The main UI currently records TCP waypoints.
+export const INSTRUCTIONS={HOME:{args:[]},MOVJ:{args:['J1','J2','J3','J4','J5','J6']},MOVL:{args:['X','Y','Z','speed']},WAIT:{args:['seconds']},'ARC ON':{args:[]},'ARC OFF':{args:[]},'SET SPEED':{args:['mm_s']},'SET WELD PARAMETER':{args:['parameter','value']},COMMENT:{args:['text']}};
+export function validateProgram(program){if(!Array.isArray(program))return {ok:false,errors:['Program must be an array of instructions.']};const errors=[];program.forEach((line,i)=>{if(!line||!INSTRUCTIONS[line.command])errors.push(`Line ${i+1}: unknown instruction.`)});return {ok:errors.length===0,errors}}

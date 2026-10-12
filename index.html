@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111820" />
+    <title>WELDTECH SIMULATOR | Robot Las 6-Sumbu</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">W<span>6</span></div>
+          <div>
+            <strong>WELDTECH <em>SIMULATOR</em></strong
+            ><small>PELATIHAN ROBOTIKA INDUSTRI & PENGELASAN</small>
+          </div>
+        </div>
+        <div class="top-meta">
+          <span class="live-dot"></span><span>SIMULATOR AKTIF</span
+          ><span class="separator"></span><span>ROBOT <b>WT-06 EDU</b></span>
+        </div>
+        <div class="top-actions">
+          <span id="statusBadge" class="status-badge">● SIAGA</span
+          ><button class="icon-btn" id="helpBtn" title="Bantuan">?</button
+          ><button class="icon-btn" id="resetBtn" title="Reset simulator">
+            ↻
+          </button>
+        </div>
+      </header>
+      <div class="workspace">
+        <aside class="sidebar">
+          <div class="side-label">RUANG KERJA</div>
+          <button class="nav-item active" data-page="simulation">
+            <span>◈</span> Simulasi Robot
+          </button>
+          <button class="nav-item" data-page="jog">
+            <span>⌖</span> Gerak Manual
+          </button>
+          <button class="nav-item" data-page="welding">
+            <span>ϟ</span> Pengaturan Pengelasan
+          </button>
+          <button class="nav-item" data-page="program">
+            <span>▤</span> Editor Program
+          </button>
+          <button class="nav-item" data-page="workpiece">
+            <span>⬡</span> Benda Kerja & Perlengkapan
+          </button>
+          <div class="side-label learn-label">PUSAT PEMBELAJARAN</div>
+          <button class="nav-item" data-page="lessons">
+            <span>▣</span> Modul Pembelajaran
+          </button>
+          <button class="nav-item" data-page="practice">
+            <span>✓</span> Tugas Latihan
+          </button>
+          <button class="nav-item" data-page="assessment">
+            <span>▥</span> Penilaian
+          </button>
+          <div class="sidebar-bottom">
+            <div class="connection-card">
+              <span class="live-dot"></span>
+              <div>
+                <b>Simulasi Lokal</b
+                ><small>Tidak ada robot fisik yang terhubung</small>
+              </div>
+            </div>
+            <small class="version">WELDTECH EDU · v1.0.0</small>
+          </div>
+        </aside>
+        <main class="main-area">
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow">
+                ENGINEERING RUANG KERJA /
+                <span id="pageCrumb">SIMULASI ROBOT</span>
+              </div>
+              <h1 id="pageTitle">
+                Simulasi Robot <span class="heading-tag">6 AXIS</span>
+              </h1>
+              <p id="pageDescription">
+                Amati, gerakkan, dan program robot las industri virtual.
+              </p>
+            </div>
+            <div class="heading-controls">
+              <label class="select-label"
+                >MODE<select id="modeSelect">
+                  <option>Pelatihan</option>
+                  <option>Manual</option>
+                  <option>Program</option>
+                </select></label
+              ><button class="btn btn-quiet" id="fitBtn">⌗ Sesuaikan Robot</button>
+            </div>
+          </div>
+          <div class="content-grid">
+            <section class="viewport-card" id="viewportCard">
+              <div class="viewport-toolbar">
+                <div class="view-label">
+                  <span class="view-dot"></span><b>TAMPILAN SIMULASI 3D</b
+                  ><span class="muted">/ KOORDINAT DUNIA</span>
+                </div>
+                <div class="view-tools">
+                  <button class="mini-btn active" data-view="iso">ISO</button
+                  ><button class="mini-btn" data-view="front">DEPAN</button
+                  ><button class="mini-btn" data-view="side">SAMPING</button
+                  ><button class="mini-btn" data-view="top">ATAS</button
+                  ><button class="mini-btn" id="gridToggle">KISI ✓</button>
+                </div>
+              </div>
+              <div id="viewport">
+                <div class="loading-overlay" id="loadingOverlay">
+                  <div class="loader"></div>
+                  <b>MENYIAPKAN LINGKUNGAN 3D</b
+                  ><small>Membangun rantai kinematika robot…</small>
+                </div>
+              </div>
+              <div class="viewport-footer">
+                <span><i class="legend orange"></i> TAUTAN ROBOT</span
+                ><span><i class="legend cyan"></i> TCP / JALUR ALAT</span
+                ><span><i class="legend yellow"></i> BUSUR LAS</span
+                ><span class="coordinates" id="tcpReadout"
+                  >TCP X 0.0 · Y 0.0 · Z 0.0 mm</span
+                >
+              </div>
+              <div class="viewport-playback">
+                <div class="play-controls">
+                  <button class="play-btn" id="playBtn">▶</button
+                  ><button class="transport-btn" id="pauseBtn">Ⅱ</button
+                  ><button class="transport-btn" id="stopBtn">■</button
+                  ><button class="transport-btn" id="stepBtn">▸|</button
+                  ><span class="transport-divider"></span
+                  ><button class="btn btn-primary" id="runWeldBtn">
+                    ϟ Jalankan Las</button
+                  ><button class="btn btn-quiet" id="clearPathBtn">
+                    Hapus Jalur
+                  </button>
+                </div>
+                <div class="timeline-wrap">
+                  <div class="timeline-info">
+                    <span id="timelineLabel">SIMULASI SIAP</span
+                    ><span id="progressText">0%</span>
+                  </div>
+                  <div class="timeline"><div id="timelineProgress"></div></div>
+                </div>
+              </div>
+            </section>
+            <aside class="control-card">
+              <div class="panel-tabs">
+                <button class="panel-tab active" data-tab="joints">
+                  SENDI</button
+                ><button class="panel-tab" data-tab="cartesian">
+                  KARTESIAN</button
+                ><button class="panel-tab" data-tab="weld">PENGELASAN</button
+                ><button class="panel-tab" data-tab="program">PROGRAM</button>
+              </div>
+              <div class="tab-panel active" id="tab-joints">
+                <div class="panel-title-row">
+                  <div>
+                    <h2>Kontrol Sendi</h2>
+                    <p>Robot artikulasi · sendi putar</p>
+                  </div>
+                  <button class="text-btn" id="zeroJointsBtn">NOLKAN SEMUA</button>
+                </div>
+                <div id="jointControls"></div>
+                <div class="panel-note">
+                  <span>ⓘ</span>
+                  <p>
+                    Batas sendi merupakan batas ilustratif untuk model edukasi ini,
+                    bukan spesifikasi robot nyata.
+                  </p>
+                </div>
+              </div>
+              <div class="tab-panel" id="tab-cartesian">
+                <div class="panel-title-row">
+                  <div>
+                    <h2>Gerak TCP</h2>
+                    <p>Posisi Titik Pusat Alat</p>
+                  </div>
+                </div>
+                <div class="coord-system">
+                  <label
+                    >Sistem koordinat<select id="coordSystem">
+                      <option value="world">Dunia</option>
+                      <option value="base">Dasar</option>
+                      <option value="tool">Alat</option>
+                    </select></label
+                  ><label
+                    >Ukuran langkah<select id="stepSize">
+                      <option value="5">5 mm</option>
+                      <option value="10" selected>10 mm</option>
+                      <option value="25">25 mm</option>
+                    </select></label
+                  >
+                </div>
+                <div class="tcp-grid" id="tcpGrid"></div>
+                <div class="panel-note">
+                  <span>ⓘ</span>
+                  <p>
+                    Gerak Kartesian menggunakan pemecah kinematika balik numerik.
+                    Target yang tidak dapat dijangkau akan ditolak.
+                  </p>
+                </div>
+              </div>
+              <div class="tab-panel" id="tab-weld">
+                <div class="panel-title-row">
+                  <div>
+                    <h2>Parameter Pengelasan</h2>
+                    <p>MIG/MAG · nilai edukasi</p>
+                  </div>
+                  <span class="small-pill" id="arcState">BUSUR MATI</span>
+                </div>
+                <div id="weldControls"></div>
+                <div class="panel-note warning-note">
+                  <span>⚠</span>
+                  <p>
+                    Ini adalah pengaturan latihan ilustratif, bukan WPS yang terkualifikasi.
+                    Pengelasan nyata memerlukan pengawasan instruktur.
+                  </p>
+                </div>
+              </div>
+              <div class="tab-panel" id="tab-program">
+                <div class="panel-title-row">
+                  <div>
+                    <h2>Program Cepat</h2>
+                    <p>Jalur las dan eksekusi instruksi</p>
+                  </div>
+                </div>
+                <div class="quick-program">
+                  <label
+                    >Nama program<input
+                      id="programName"
+                      value="BUTT_JOINT_DEMO" /></label
+                  ><label
+                    >Kecepatan jalur (mm/s)<input
+                      id="programSpeed"
+                      type="number"
+                      min="1"
+                      max="100"
+                      value="12"
+                  /></label>
+                  <div class="quick-actions">
+                    <button class="btn btn-primary" id="addWaypointBtn">
+                      ＋ Tambah Posisi Saat Ini</button
+                    ><button class="btn btn-quiet" id="saveProgramBtn">
+                      Simpan
+                    </button>
+                  </div>
+                  <div class="waypoint-list" id="waypointList">
+                    <div class="empty-state">Belum ada titik jalur yang direkam.</div>
+                  </div>
+                  <button class="btn btn-primary full-btn" id="playPathBtn">
+                    ▶ Jalankan Jalur Terekam
+                  </button>
+                </div>
+              </div>
+            </aside>
+          </div>
+          <div class="lower-grid">
+            <section class="console-card">
+              <div class="section-header">
+                <div>
+                  <h2>Konsol Sistem</h2>
+                  <p>Peristiwa dan diagnostik simulator secara langsung</p>
+                </div>
+                <div class="console-actions">
+                  <select id="consoleFilter">
+                    <option value="all">Semua pesan</option>
+                    <option value="info">Info</option>
+                    <option value="warning">Peringatan</option>
+                    <option value="error">Kesalahan</option></select
+                  ><button class="text-btn" id="clearConsoleBtn">HAPUS</button>
+                </div>
+              </div>
+              <div
+                class="console-lines"
+                id="consoleLines"
+                aria-live="polite"
+              ></div>
+            </section>
+            <section class="telemetry-card">
+              <div class="section-header">
+                <div>
+                  <h2>Telemetri Langsung</h2>
+                  <p>Status simulator yang dihitung</p>
+                </div>
+                <span class="small-pill">AKTIF</span>
+              </div>
+              <div class="telemetry-grid">
+                <div>
+                  <small>KECEPATAN TCP</small
+                  ><strong id="teleSpeed">0.0 <i>mm/s</i></strong>
+                </div>
+                <div>
+                  <small>PANJANG LAS</small
+                  ><strong id="weldLength">0.0 <i>mm</i></strong>
+                </div>
+                <div>
+                  <small>WAKTU SIMULASI</small><strong id="simTime">00:00</strong>
+                </div>
+                <div>
+                  <small>STATUS BUSUR</small><strong id="teleArc">MATI</strong>
+                </div>
+              </div>
+              <div class="safety-strip">
+                <span class="safety-icon">✓</span>
+                <div>
+                  <b id="safetyTitle">Interlock keselamatan aman</b
+                  ><small id="safetySub"
+                    >Sistem keselamatan virtual · tanpa perangkat keras fisik</small
+                  >
+                </div>
+                <button id="resetSafetyBtn" class="btn btn-quiet" hidden>
+                  RESET KESELAMATAN</button
+                ><button id="estopBtn" class="estop-btn">EMERGENCY SATAS</button>
+              </div>
+            </section>
+          </div>
+          <div class="page-content" id="pageContent" hidden></div>
+          <footer class="app-footer">
+            <span>WELDTECH SIMULATOR <b>VERSI EDUKASI</b></span
+            ><span
+              >Hanya lingkungan virtual · Bukan pengendali industri
+              bersertifikat</span
+            >
+          </footer>
+        </main>
+      </div>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+    <div class="modal-backdrop" id="helpModal" hidden>
+      <div class="modal">
+        <button class="modal-close" id="closeHelp">×</button>
+        <div class="eyebrow">PANDUAN SINGKAT</div>
+        <h2>Selamat Datang di WELDTECH</h2>
+        <p>
+          Gunakan tab Sendi untuk menggerakkan setiap sumbu. Rekam titik jalur, lalu jalankan
+          jalur untuk melihat pergerakan TCP dan hasil las virtual.
+        </p>
+        <ul>
+          <li><b>Orbit:</b> seret pada tampilan 3D.</li>
+          <li><b>Zoom:</b> roda mouse / trackpad.</li>
+          <li><b>Geser:</b> seret dengan klik kanan.</li>
+          <li>
+            <b>Henti darurat:</b> menghentikan gerakan virtual dan menonaktifkan busur.
+            Reset keselamatan sebelum menjalankan kembali.
+          </li>
+        </ul>
+        <p class="disclaimer">
+          Ini adalah simulator edukasi yang disederhanakan. Simulator ini tidak memprediksi kualitas las
+          dan tidak menggantikan pelatihan formal, WPS, atau sistem keselamatan mesin.
+        </p>
+        <button class="btn btn-primary full-btn" id="gotItBtn">Mengerti</button>
+      </div>
+    </div>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
